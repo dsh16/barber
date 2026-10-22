@@ -1,0 +1,19 @@
+# Connect this repository in Render as a Blueprint. Supply DATABASE_URL securely.
+# The PostgreSQL database must already exist; no paid database is provisioned here.
+services:
+  - type: web
+    name: barber-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build -w @barber/backend
+    startCommand: npm run db:migrate && npm start -w @barber/backend
+    healthCheckPath: /api/ready
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://dsh16.github.io

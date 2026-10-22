@@ -2,9 +2,10 @@
 interface Master { id: number; name: string }
 interface Service { id: number; name: string; durationMinutes: number }
 const config = useRuntimeConfig();
+const apiConfigured = Boolean(config.public.apiBase);
 const { data: catalog, status: catalogStatus, error: catalogError, refresh } = await useFetch<{
   masters: Master[]; services: Service[];
-}>(`${config.public.apiBase}/catalog`, { server: false });
+}>(`${config.public.apiBase}/catalog`, { server: false, immediate: apiConfigured });
 const step = ref(1);
 const masterId = ref<number | null | undefined>(undefined);
 const serviceId = ref<number>();
@@ -57,7 +58,7 @@ function reset() {
 
 <template>
   <main>
-    <header><a href="/" class="brand">BARBER<span> / </span>CLUB</a><span class="tag">Живая очередь</span></header>
+    <header><NuxtLink to="/" class="brand">BARBER<span> / </span>CLUB</NuxtLink><span class="tag">Живая очередь</span></header>
     <div class="intro">
       <p class="eyebrow">ВАШ СЛЕДУЮЩИЙ ОБРАЗ</p>
       <h1>Хорошая стрижка.<br>Без лишних звонков.</h1>
@@ -80,7 +81,11 @@ function reset() {
           <span>{{ index + 1 }}</span>{{ label }}
         </li>
       </ol>
-      <p v-if="catalogStatus === 'pending'" role="status">Загружаем мастеров и услуги…</p>
+      <div v-if="!apiConfigured" role="status">
+        <h2>Онлайн-запись скоро откроется</h2>
+        <p class="muted">Пока сайт готовится к запуску, запись через форму недоступна.</p>
+      </div>
+      <p v-else-if="catalogStatus === 'pending'" role="status">Загружаем мастеров и услуги…</p>
       <div v-else-if="catalogError" role="alert">
         <p>Не удалось загрузить список мастеров и услуг.</p>
         <button @click="refresh()">Попробовать снова</button>

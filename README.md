@@ -3,6 +3,8 @@
 Монорепозиторий на npm workspaces: `apps/backend` — Express 5 + Sequelize 6,
 `apps/frontend` — Nuxt 4. Оба приложения используют TypeScript.
 
+Публикация фронтенда на GitHub Pages и API с внешней PostgreSQL: [DEPLOY.md](DEPLOY.md).
+
 ## Требования
 
 Node.js >=22.12 (рекомендуется Node 24), npm 11 и Docker Compose v2.
