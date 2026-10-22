@@ -1,9 +1,9 @@
 import { SequelizeStorage, Umzug } from 'umzug';
 import { sequelize } from './db.js';
+import { migrations } from './migrations.js';
 
-// Add versioned migrations here. Never use sync({ alter: true }) in production.
 const migrator = new Umzug({
-  migrations: [],
+  migrations,
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
   logger: console,

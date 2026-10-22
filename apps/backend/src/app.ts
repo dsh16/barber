@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { config } from './config.js';
+import { bookingRouter, BookingError } from './booking.js';
 
 export function createApp(checkDatabase: () => Promise<unknown>) {
   const app = express();
@@ -19,8 +20,13 @@ export function createApp(checkDatabase: () => Promise<unknown>) {
       res.status(503).json({ status: 'error', database: 'unavailable' });
     }
   });
+  app.use('/api', bookingRouter);
   app.use((_req, res) => res.status(404).json({ error: 'Not found' }));
   const errorHandler: express.ErrorRequestHandler = (error, _req, res, _next) => {
+    if (error instanceof BookingError) {
+      res.status(error.status).json({ error: error.message });
+      return;
+    }
     const status = error?.status === 400 ? 400 : 500;
     if (status === 500) console.error(error);
     res.status(status).json({ error: status === 400 ? 'Invalid request' : 'Internal server error' });
