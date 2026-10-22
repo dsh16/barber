@@ -1,0 +1,16 @@
+{
+  "name": "barber",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "concurrently -k -n backend,frontend \"npm run dev -w @barber/backend\" \"npm run dev -w @barber/frontend\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test -w @barber/backend",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down",
+    "db:migrate": "npm run db:migrate -w @barber/backend"
+  },
+  "devDependencies": { "concurrently": "^9.2.1" }
+}
